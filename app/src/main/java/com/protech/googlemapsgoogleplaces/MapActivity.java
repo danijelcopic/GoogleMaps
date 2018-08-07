@@ -14,9 +14,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.Manifest;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,6 +73,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     //widgets
     private EditText mSearchText;
+    private ImageView mGps;
 
     //vars
     private Boolean mLocationPermissionGranted = false;
@@ -82,8 +85,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
         mSearchText = (EditText) findViewById(R.id.input_search);
         mSearchText.setSingleLine();
+
+        mGps = (ImageView) findViewById(R.id.ic_gps);
 
         getLocationPermission();
     }
@@ -104,6 +110,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     geoLocate();
                 }
                 return false;
+            }
+        });
+
+        mGps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: clicked GPS icon");
+                getDeviceLocation();
             }
         });
 
@@ -152,8 +166,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             Log.d(TAG, "onComplete: found location!");
                             Location currentLocation = (Location) task.getResult();
 
+
                             moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), DEFAULT_ZOOM,
                                     "My location");
+
+
 
                         } else {
                             Log.d(TAG, "onComplete: current location is null");
